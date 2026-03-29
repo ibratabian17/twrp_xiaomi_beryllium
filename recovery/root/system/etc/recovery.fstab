@@ -8,9 +8,21 @@
 #       /proc/device-tree/firmware/android/fstab/vendor
 
 #<src>                                      <mnt_point>             <type>  <mnt_flags and options>                                                                           <fs_mgr_flags>
+
+# Partitions
+system                                       /system                 ext4    ro,barrier=1,discard                                                                              wait,logical,first_stage_mount
+system_ext                                   /system_ext             ext4    ro,barrier=1,discard                                                                              wait,logical,first_stage_mount
+product                                      /product                ext4    ro,barrier=1,discard                                                                              wait,logical,first_stage_mount
+vendor                                       /vendor                 ext4    ro,barrier=1,discard                                                                              wait,logical,first_stage_mount
+odm                                          /odm                    ext4    ro,barrier=1,discard                                                                              wait,logical,first_stage_mount
+
+# Metadata
+/dev/block/by-name/logdump                   /metadata               ext4    noatime,nosuid,nodev,discard,data=journal,commit=1                                                wait,check,formattable,first_stage_mount
+
+# Userdata
+/dev/block/bootdevice/by-name/userdata       /data                   f2fs    noatime,nosuid,nodev,reserve_root=32768,resgid=1065,discard,background_gc=off,fsync_mode=nobarrier      latemount,wait,check,fileencryption=aes-256-xts:aes-256-cts:v2,quota,formattable,reservedsize=128M,checkpoint=fs
+/dev/block/bootdevice/by-name/userdata       /data                   ext4    noatime,nosuid,nodev,barrier=0,noauto_da_alloc                                                    latemount,wait,check,fileencryption=aes-256-xts:aes-256-cts:v2,quota,formattable,checkpoint=fs
+
+# Misc partitions
 /dev/block/bootdevice/by-name/cache          /cache                  ext4    noatime,nosuid,nodev,barrier=1                                                                    wait
 /dev/block/bootdevice/by-name/misc           /misc                   emmc    defaults                                                                                          defaults
-/dev/block/bootdevice/by-name/system         /                       ext4    ro,barrier=1                                                                                      wait,recoveryonly
-/dev/block/bootdevice/by-name/cust           /system_ext             ext4    ro,barrier=1                                                                                      wait,recoveryonly
-/dev/block/bootdevice/by-name/vendor         /vendor                 ext4    ro,barrier=1                                                                                      wait,recoveryonly
-/dev/block/bootdevice/by-name/userdata       /data                   ext4    noatime,nosuid,nodev,barrier=0,noauto_da_alloc                                                    latemount,wait,check,fileencryption=ice,quota,encryptable=footer
